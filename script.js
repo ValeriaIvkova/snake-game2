@@ -2,6 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const scoreEl = document.getElementById("score");
 const restartBtn = document.getElementById("restart");
+const touchControls = document.getElementById("touch-controls");
 
 const tileSize = 20;
 const tilesCount = canvas.width / tileSize;
@@ -135,6 +136,29 @@ window.addEventListener("keydown", (e) => {
   if (key === "ArrowLeft" && direction !== "right") nextDirection = "left";
   if (key === "ArrowRight" && direction !== "left") nextDirection = "right";
 });
+
+function setDirectionFromControl(dir) {
+  if (dir === "up" && direction !== "down") nextDirection = "up";
+  if (dir === "down" && direction !== "up") nextDirection = "down";
+  if (dir === "left" && direction !== "right") nextDirection = "left";
+  if (dir === "right" && direction !== "left") nextDirection = "right";
+}
+
+touchControls.addEventListener("click", (e) => {
+  const btn = e.target.closest(".ctrl-btn");
+  if (!btn) return;
+  const dir = btn.getAttribute("data-dir");
+  setDirectionFromControl(dir);
+});
+
+// поддержка касаний: удобно жать и сдвигать палец
+touchControls.addEventListener("touchstart", (e) => {
+  const touch = e.target.closest(".ctrl-btn");
+  if (!touch) return;
+  e.preventDefault();
+  const dir = touch.getAttribute("data-dir");
+  setDirectionFromControl(dir);
+}, { passive: false });
 
 restartBtn.addEventListener("click", resetGame);
 
